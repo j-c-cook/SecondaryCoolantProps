@@ -13,6 +13,7 @@ properties = (
     "conductivity",
     "prandtl",
     "thermal_diffusivity",
+    "freeze_point",
 )
 prop_options = click.Choice(properties)
 x_range = click.FloatRange(min=0.0, max=1.0)
@@ -61,7 +62,10 @@ x_range = click.FloatRange(min=0.0, max=1.0)
 def cli(fluid_name: str, concentration: float, fluid_prop: str, temperature: float, quick: bool):
     f = fluid.Fluid(fluid_name, concentration)
 
-    value = getattr(f, fluid_prop)(temperature)
+    if fluid_prop == "freeze_point":
+        value = getattr(f, fluid_prop)(concentration)
+    else:
+        value = getattr(f, fluid_prop)(temperature)
     units = getattr(f, f"{fluid_prop}_units")()
     if quick:
         print(value)
